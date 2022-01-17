@@ -67,7 +67,7 @@ set(SERVER_SRC ${TANGOACCESSCONTROL_SRC} ${ACCESSCONTROL_SRC}  ${USER_SRC_FILES}
 # User additional include, link folders/libraries and source files
 #
 if(WIN32)      
-set(HEADERS ${TANGOACCESSCONTROL_INCLUDE} ${ACCESSCONTROL_INCLUDE})
+set(HEADERS ${TANGOACCESSCONTROL_INCLUDE} ${ACCESSCONTROL_INCLUDE}/AccessControl.h ${ACCESSCONTROL_INCLUDE}/AccessControlClass.h)
 link_directories(${TANGO_LNK_DIR})
 set(MYSQL_INCLUDE_DIRS "$ENV{MYSQL_DIR}/include")
 include_directories( "." ${TANGO_INCLUDES}  ${CMAKE_SOURCE_DIR} ${MYSQL_INCLUDE_DIRS} "$ENV{MYSQL_DIR}/include")
