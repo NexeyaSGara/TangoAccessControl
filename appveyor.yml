@@ -169,7 +169,7 @@ install:
   - cmd: echo "Platform='%Platform%'"
   - cmd: set PYTHONPATH=%PYTHONPATH%
   # Tango Server
-  - cmd: cd "C:\projects\TangoDatabase"
+  - cmd: cd "C:\projects\TangoAccessControl\TangoAccessControl"
   - cmd: if %ARCH%==win32-msvc9 set TANGO_ROOT=C:/projects/libtango/libtango_9.3.4_v90_x86/
   - cmd: if %ARCH%==x64-msvc9 set TANGO_ROOT=C:/projects/libtango/libtango_9.3.4_v90_x64/
   - cmd: if %ARCH%==win32-msvc10 set TANGO_ROOT=C:/projects/libtango/libtango_9.3.4_v100_x86/
@@ -188,7 +188,7 @@ build:
   verbosity: minimal
   
 build_script:
-  - cmd: cd C:/projects/TangoAccessControl 
+  - cmd: cd C:/projects/TangoAccessControl/TangoAccessControl
   - cmake --build ./ --config Release
   - cmd: if %ARCH%==x64-msvc10 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
   #- cmd: cd c:/projects/debug_build
@@ -197,7 +197,7 @@ build_script:
 
 
 after_build:
-  - cmd: cd C:/projects/TangoAccessControl 
+  - cmd: cd C:/projects/TangoAccessControl/TangoAccessControl
   # Generating installer
   - cmd: cpack -G NSIS
   - cmd: cpack -G ZIP
@@ -208,7 +208,7 @@ after_build:
   #rename x64-msvc10
   #- cmd: if %ARCH%==x64-msvc10 move TangoDatabase_9.3.4_Windows7.1SDK_x64_debug.exe TangoDatabase_9.3.4_v100_x64_debug.exe
   #- cmd: if %ARCH%==x64-msvc10 move TangoDatabase_9.3.4_Windows7.1SDK_x64_debug.zip TangoDatabase_9.3.4_v100_x64_debug.zip
-  - cmd: cd C:/projects/TangoAccessControl 
+  - cmd: cd C:/projects/TangoAccessControl/TangoAccessControl
   - cmd: if %ARCH%==x64-msvc10 move TangoAccessControl_9.3.4_Windows7.1SDK_x64.exe TangoAccessControl_9.3.4_v100_x64.exe
   - cmd: if %ARCH%==x64-msvc10 move TangoAccessControl_9.3.4_Windows7.1SDK_x64.zip TangoAccessControl_9.3.4_v100_x64.zip
   # copying debug versions for upload
