@@ -38,7 +38,13 @@ set(CXXFLAGS_USER -g)
 #
 # Get global information
 #
+if(WIN32)
+include(CmakeTangoWin.cmake)
+add_definitions(-D_UNICODE)
+add_definitions(-DUNICODE)
+else(win32)
 include(${MAKE_ENV}/cmake_tango.opt)
+endif(WIN32)
 
 #
 # Files for TangoAccessControl TANGO class
@@ -55,24 +61,43 @@ set(ACCESSCONTROL_INCLUDE ../AbstractClasses)
 set(ACCESSCONTROL_SRC ${ACCESSCONTROL_PATH}/${ACCESSCONTROL}.cpp ${ACCESSCONTROL_PATH}/${ACCESSCONTROL}Class.cpp ${ACCESSCONTROL_PATH}/${ACCESSCONTROL}StateMachine.cpp)
 
 
+set(SERVER_SRC ${TANGOACCESSCONTROL_SRC} ${ACCESSCONTROL_SRC}  ${USER_SRC_FILES} ClassFactory.cpp main.cpp)
+
 #
 # User additional include, link folders/libraries and source files
 #
+if(WIN32)      
+set(HEADERS ${TANGOACCESSCONTROL_INCLUDE} ${ACCESSCONTROL_INCLUDE})
+link_directories(${TANGO_LNK_DIR})
+set(MYSQL_INCLUDE_DIRS "$ENV{MYSQL_DIR}/include")
+include_directories( "." ${TANGO_INCLUDES}  ${CMAKE_SOURCE_DIR} ${MYSQL_INCLUDE_DIRS} "$ENV{MYSQL_DIR}/include")
+add_executable(TangoAccessControl ${SERVER_SRC} ${HEADERS} ${ADDITIONAL_SOURCES})
+target_compile_definitions(TangoAccessControl PUBLIC "LOG4TANGO_HAS_DLL")
+target_compile_definitions(TangoAccessControl PUBLIC "TANGO_HAS_DLL")
+target_compile_definitions(TangoAccessControl PUBLIC "OMNI_UNLOADABLE_STUBS")
+target_compile_definitions(TangoAccessControl PUBLIC "_CRT_SECURE_NO_DEPRECATE")
+target_compile_definitions(TangoAccessControl PUBLIC "USE_stub_in_nt_dll")
+target_compile_options(TangoAccessControl PUBLIC "/MT")
+target_link_libraries(TangoAccessControl PUBLIC ${TANGO_DYN_LIBS} ${WIN_LIBS} ${ZMQ_LIB_DYN} "$ENV{MYSQL_DIR}/lib/libmysql.lib")
+install(TARGETS TangoAccessControl 
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION bin
+        ARCHIVE DESTINATION bin)
+else(WIN32)
 set(USER_INCL_DIR /usr/include/mysql)
 set(USER_LIB_DIR /usr/lib/x86_64-linux-gnu)
 set(USER_LIBS mysqlclient_r)
 set(USER_SRC_FILES )
-
 #
 # Set gloabal info and include directories
 #
 set(ALL_CLASS_INCLUDE  ${TANGOACCESSCONTROL_INCLUDE} ${ACCESSCONTROL_INCLUDE}  ${USER_INCL_DIR})
-set(SERVER_SRC ${TANGOACCESSCONTROL_SRC} ${ACCESSCONTROL_SRC}  ${USER_SRC_FILES} ClassFactory.cpp main.cpp)
 include_directories(${ALL_CLASS_INCLUDE}  ${USER_INCL_DIR} ${TANGO_INCLUDES})
-
 #
 # Device Server generation
 #
 set(SERVER_NAME TangoAccessControl)
 include(${MAKE_ENV}/cmake_common_target.opt)
+endif(WIN32)
+
 
